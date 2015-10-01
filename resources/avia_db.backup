@@ -1,0 +1,254 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.4.4
+-- Dumped by pg_dump version 9.4.4
+-- Started on 2015-10-01 22:23:37
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 178 (class 3079 OID 11855)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2025 (class 0 OID 0)
+-- Dependencies: 178
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 174 (class 1259 OID 24666)
+-- Name: Flight; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Flight" (
+    "Flight" character(5) NOT NULL,
+    "Departure_city" character varying(30),
+    "Arrival_city" character varying(30),
+    "Plane" character varying(20),
+    "Available_seats" integer,
+    "Class" character(1)
+);
+
+
+ALTER TABLE "Flight" OWNER TO postgres;
+
+--
+-- TOC entry 175 (class 1259 OID 24671)
+-- Name: Order; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Order" (
+    order_id integer NOT NULL,
+    user_id integer,
+    "Type_of_order" character varying,
+    flight character(5)
+);
+
+
+ALTER TABLE "Order" OWNER TO postgres;
+
+--
+-- TOC entry 177 (class 1259 OID 24699)
+-- Name: Recurrence; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "Recurrence" (
+    rec_id integer NOT NULL,
+    "Start_period" date,
+    "End_period" date,
+    "Flight" character(5),
+    "Departure_time" time with time zone,
+    "Arrival_time" time with time zone,
+    "Mon" boolean,
+    "Tue" boolean,
+    "Wed" boolean,
+    "Thu" boolean,
+    "Fri" boolean,
+    "Sat" boolean,
+    "Sun" boolean
+);
+
+
+ALTER TABLE "Recurrence" OWNER TO postgres;
+
+--
+-- TOC entry 176 (class 1259 OID 24697)
+-- Name: Recurrence_rec_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "Recurrence_rec_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "Recurrence_rec_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2026 (class 0 OID 0)
+-- Dependencies: 176
+-- Name: Recurrence_rec_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "Recurrence_rec_id_seq" OWNED BY "Recurrence".rec_id;
+
+
+--
+-- TOC entry 173 (class 1259 OID 24656)
+-- Name: User; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "User" (
+    user_id integer NOT NULL,
+    "Name" character varying(20),
+    "Password" character varying(20),
+    role character varying(10)
+);
+
+
+ALTER TABLE "User" OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 24654)
+-- Name: User_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE "User_user_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "User_user_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 2027 (class 0 OID 0)
+-- Dependencies: 172
+-- Name: User_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE "User_user_id_seq" OWNED BY "User".user_id;
+
+
+--
+-- TOC entry 1897 (class 2604 OID 24702)
+-- Name: rec_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Recurrence" ALTER COLUMN rec_id SET DEFAULT nextval('"Recurrence_rec_id_seq"'::regclass);
+
+
+--
+-- TOC entry 1896 (class 2604 OID 24659)
+-- Name: user_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "User" ALTER COLUMN user_id SET DEFAULT nextval('"User_user_id_seq"'::regclass);
+
+
+--
+-- TOC entry 1901 (class 2606 OID 24670)
+-- Name: Flight_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Flight"
+    ADD CONSTRAINT "Flight_key" PRIMARY KEY ("Flight");
+
+
+--
+-- TOC entry 1903 (class 2606 OID 24678)
+-- Name: order_id; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Order"
+    ADD CONSTRAINT order_id PRIMARY KEY (order_id);
+
+
+--
+-- TOC entry 1905 (class 2606 OID 24704)
+-- Name: rec_id; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "Recurrence"
+    ADD CONSTRAINT rec_id PRIMARY KEY (rec_id);
+
+
+--
+-- TOC entry 1899 (class 2606 OID 24661)
+-- Name: user_id; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "User"
+    ADD CONSTRAINT user_id PRIMARY KEY (user_id);
+
+
+--
+-- TOC entry 1908 (class 2606 OID 24705)
+-- Name: Recurrence_Flight_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Recurrence"
+    ADD CONSTRAINT "Recurrence_Flight_fkey" FOREIGN KEY ("Flight") REFERENCES "Flight"("Flight");
+
+
+--
+-- TOC entry 1906 (class 2606 OID 24679)
+-- Name: flight; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Order"
+    ADD CONSTRAINT flight FOREIGN KEY (flight) REFERENCES "Flight"("Flight");
+
+
+--
+-- TOC entry 1907 (class 2606 OID 24684)
+-- Name: user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "Order"
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES "User"(user_id);
+
+
+--
+-- TOC entry 2024 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2015-10-01 22:23:39
+
+--
+-- PostgreSQL database dump complete
+--
+

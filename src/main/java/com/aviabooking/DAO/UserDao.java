@@ -8,7 +8,7 @@ import com.aviabooking.entity.UserEntity;
 /**
  * Created by vataga on 01.10.2015.
  */
-public interface UserDao {
+public interface UserDAO {
     public void addUser(UserEntity user) throws SQLException;   //добавить пользователя
     public void updateUser(UserEntity user) throws SQLException;//обновить пользователя
     public UserEntity getUserById(Long id) throws SQLException;    //получить пользователя по id
